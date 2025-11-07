@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "5GMxrrK2x4Etgo2M2Aof+o9lXQN0inSoGR/5CeXCZ2E=",
+  "Source": "censudex-inventory-service",
+  "BasePath": "_content/censudex-inventory-service",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

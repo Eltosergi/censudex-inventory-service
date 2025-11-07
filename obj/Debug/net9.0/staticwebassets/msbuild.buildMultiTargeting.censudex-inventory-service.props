@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\censudex-inventory-service.props" />
+</Project>
