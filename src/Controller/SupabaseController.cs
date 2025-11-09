@@ -48,13 +48,40 @@ namespace censudex_inventory_service.Controllers
                 return BadRequest($"Error: {ex.Message}");
             }
         }
-        
+
         [HttpGet("get/{productId}")]
         public async Task<IActionResult> GetInventory(Guid productId)
         {
             var inventory = await SupabaseHelper.GetInventoryAsync(_supabase, productId);
             return inventory != null ? Ok(inventory) : NotFound("Inventario no encontrado");
         }
+
+        [HttpPatch("update/{productId}")]
+        public async Task<IActionResult> UpdateInventory(Guid productId, [FromBody] long stock)
+        {
+            try
+            {
+                var existingInventory = await SupabaseHelper.GetInventoryAsync(_supabase, productId);
+                if (existingInventory == null)
+                {
+                    return NotFound("Inventario no encontrado para actualizar");
+                }
+
+                var inventory = new Inventory
+                {
+                    productid = productId,
+                    stock = stock
+                };
+
+                var result = await SupabaseHelper.UpdateInventoryAsync(_supabase, inventory);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
+        }
+        
 
     }
 }

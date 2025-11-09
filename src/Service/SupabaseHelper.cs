@@ -61,5 +61,22 @@ namespace censudex_inventory_service.src.Service
             }
         }
 
+        public static async Task<bool> UpdateInventoryAsync(Client client, Inventory inventory)
+        {
+            try
+            {
+                var response = await client.From<Inventory>()
+                                           .Where(i => i.productid == inventory.productid)
+                                           .Update(inventory);
+
+                return response.Models != null && response.Models.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error al actualizar inventario: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }
