@@ -1,3 +1,4 @@
+using censudex_inventory_service.src.Models;
 using Supabase;
 using System;
 using System.Threading.Tasks;
@@ -10,12 +11,29 @@ namespace censudex_inventory_service.src.Service
         {
             try
             {
-                await client.InitializeAsync(); // 🔹 Intenta inicializar conexión
+                await client.InitializeAsync();
                 return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al conectar a Supabase: {ex.Message}");
+                return false;
+            }
+        }
+
+        public static async Task<bool> AddInventoryAsync(Client client, Inventory inventory)
+        {
+            try
+            {
+                // Inserta el nuevo registro en la tabla "Inventory"
+                var response = await client.From<Inventory>().Insert(inventory);
+
+                // Si no hubo error, retorna true
+                return response.Models != null && response.Models.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error al insertar inventario: {ex.Message}");
                 return false;
             }
         }
