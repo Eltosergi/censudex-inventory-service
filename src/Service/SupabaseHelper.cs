@@ -1,3 +1,4 @@
+using censudex_inventory_service.src.DTOs;
 using censudex_inventory_service.src.Models;
 using Supabase;
 using System;
@@ -35,5 +36,30 @@ namespace censudex_inventory_service.src.Service
                 return false;
             }
         }
+
+        public static async Task<InventoryDTO?> GetInventoryAsync(Client client, Guid productId)
+        {
+            try
+            {
+                var response = await client.From<Inventory>()
+                                        .Where(i => i.productid == productId)
+                                        .Single();
+
+                if (response == null)
+                    return null;
+
+                return new InventoryDTO
+                {
+                    productid = response.productid,
+                    stock = response.stock
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error al obtener inventario: {ex.Message}");
+                return null;
+            }
+        }
+
     }
 }

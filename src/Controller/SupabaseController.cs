@@ -39,7 +39,7 @@ namespace censudex_inventory_service.Controllers
                 {
                     productid = inventoryDTO.productid,
                     stock = inventoryDTO.stock
-                };                
+                };
                 var result = await SupabaseHelper.AddInventoryAsync(_supabase, inventory);
                 return Ok(result);
             }
@@ -48,5 +48,13 @@ namespace censudex_inventory_service.Controllers
                 return BadRequest($"Error: {ex.Message}");
             }
         }
+        
+        [HttpGet("get/{productId}")]
+        public async Task<IActionResult> GetInventory(Guid productId)
+        {
+            var inventory = await SupabaseHelper.GetInventoryAsync(_supabase, productId);
+            return inventory != null ? Ok(inventory) : NotFound("Inventario no encontrado");
+        }
+
     }
 }
