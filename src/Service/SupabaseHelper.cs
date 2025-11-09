@@ -78,5 +78,32 @@ namespace censudex_inventory_service.src.Service
             }
         }
 
+        public static async Task<List<InventoryDTO>> GetAllInventoryAsync(Client client)
+        {
+            var inventoryDTOs = new List<InventoryDTO>();
+            try
+            {
+                var response = await client.From<Inventory>().Get();
+
+                if (response.Models != null)
+                {
+                    foreach (var item in response.Models)
+                    {
+                        inventoryDTOs.Add(new InventoryDTO
+                        {
+                            productid = item.productid,
+                            stock = item.stock
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error al obtener todos los inventarios: {ex.Message}");
+            }
+
+            return inventoryDTOs;
+        }
+
     }
 }

@@ -56,6 +56,19 @@ namespace censudex_inventory_service.Controllers
             return inventory != null ? Ok(inventory) : NotFound("Inventario no encontrado");
         }
 
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAllInventory()
+        {
+            var inventoryList = await SupabaseHelper.GetAllInventoryAsync(_supabase);
+
+            if (inventoryList == null || inventoryList.Count == 0)
+            {
+                return NotFound("No se encontraron inventarios");
+            }
+            
+            return Ok(inventoryList);
+        }
+
         [HttpPatch("update/{productId}")]
         public async Task<IActionResult> UpdateInventory(Guid productId, [FromBody] long stock)
         {
