@@ -25,10 +25,8 @@ namespace censudex_inventory_service.src.Service
         {
             try
             {
-                // Inserta el nuevo registro en la tabla "Inventory"
                 var response = await client.From<Inventory>().Insert(inventory);
 
-                // Si no hubo error, retorna true
                 return response.Models != null && response.Models.Count > 0;
             }
             catch (Exception ex)

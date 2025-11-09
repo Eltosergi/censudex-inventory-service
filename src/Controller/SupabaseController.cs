@@ -3,6 +3,7 @@ using Supabase;
 using System.Threading.Tasks;
 using censudex_inventory_service.src.Service;
 using censudex_inventory_service.src.Models;
+using censudex_inventory_service.src.DTOs;
 
 namespace censudex_inventory_service.Controllers
 {
@@ -17,7 +18,7 @@ namespace censudex_inventory_service.Controllers
             _supabase = supabase;
         }
 
-        [HttpGet("check-connection")]
+        [HttpGet("check")]
         public async Task<IActionResult> CheckConnection()
         {
             bool conectado = await SupabaseHelper.IsConnectedAsync(_supabase);
@@ -29,15 +30,16 @@ namespace censudex_inventory_service.Controllers
             });
         }
 
-        [HttpPost("add-inventory")]
-        public async Task<IActionResult> AddInventory([FromBody] Inventory inventory)
+        [HttpPost("add")]
+        public async Task<IActionResult> AddInventory([FromBody] InventoryDTO inventoryDTO)
         {
             try
             {
-                // Aseguramos que venga un GUID válido (si no, se genera uno)
-                if (inventory.productid == Guid.Empty)
-                    inventory.productid = Guid.NewGuid();
-
+                var inventory = new Inventory
+                {
+                    productid = inventoryDTO.productid,
+                    stock = inventoryDTO.stock
+                };                
                 var result = await SupabaseHelper.AddInventoryAsync(_supabase, inventory);
                 return Ok(result);
             }

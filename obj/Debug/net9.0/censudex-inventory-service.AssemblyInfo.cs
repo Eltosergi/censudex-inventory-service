@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("censudex-inventory-service")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+03b5a6b64454003bf08668da80d8772b586b8014")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f1c7b1144407ce7179b154eb7239fdb46dbbc96")]
 [assembly: System.Reflection.AssemblyProductAttribute("censudex-inventory-service")]
 [assembly: System.Reflection.AssemblyTitleAttribute("censudex-inventory-service")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
