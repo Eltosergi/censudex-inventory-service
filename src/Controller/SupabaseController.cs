@@ -65,12 +65,17 @@ namespace censudex_inventory_service.Controllers
             {
                 return NotFound("No se encontraron inventarios");
             }
-            
+
             return Ok(inventoryList);
         }
+        
+        // Actualizar inventario - tres variantes: set, inc, dec
+        // Set: establece el stock a un valor específico
+        // Inc: incrementa el stock en una cantidad específica
+        // Dec: decrementa el stock en una cantidad específica
 
-        [HttpPatch("update/{productId}")]
-        public async Task<IActionResult> UpdateInventory(Guid productId, [FromBody] long stock)
+        [HttpPatch("update/set/{productId}")]
+        public async Task<IActionResult> UpdateSetInventory(Guid productId, [FromBody] long stock)
         {
             try
             {
@@ -94,7 +99,64 @@ namespace censudex_inventory_service.Controllers
                 return BadRequest($"Error: {ex.Message}");
             }
         }
-        
+
+        [HttpPatch("update/inc/{productId}")]
+        public async Task<IActionResult> UpdateIncInventory(Guid productId, [FromBody] long stock)
+        {
+            try
+            {
+                var existingInventory = await SupabaseHelper.GetInventoryAsync(_supabase, productId);
+                if (existingInventory == null)
+                {
+                    return NotFound("Inventario no encontrado para actualizar");
+                }
+
+                var inventory = new Inventory
+                {
+                    productid = productId,
+                    stock = existingInventory.stock + stock
+                };
+
+                var result = await SupabaseHelper.UpdateInventoryAsync(_supabase, inventory);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
+        }
+
+        [HttpPatch("update/dec/{productId}")]
+        public async Task<IActionResult> UpdateDecInventory(Guid productId, [FromBody] long stock)
+        {
+            try
+            {
+                var existingInventory = await SupabaseHelper.GetInventoryAsync(_supabase, productId);
+                if (existingInventory == null)
+                {
+                    return NotFound("Inventario no encontrado para actualizar");
+                }
+
+                if (existingInventory.stock < stock)
+                {
+                    return BadRequest("No hay suficiente stock para decrementar");
+                }
+
+                var inventory = new Inventory
+                {
+                    productid = productId,
+                    stock = existingInventory.stock - stock
+                };
+
+                var result = await SupabaseHelper.UpdateInventoryAsync(_supabase, inventory);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
+        }
+
 
     }
 }
