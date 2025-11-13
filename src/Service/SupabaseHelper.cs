@@ -1,13 +1,12 @@
 using censudex_inventory_service.src.DTOs;
 using censudex_inventory_service.src.Models;
 using Supabase;
-using System;
-using System.Threading.Tasks;
 
 namespace censudex_inventory_service.src.Service
 {
+    
     public class SupabaseHelper
-    {
+    {       
         public static async Task<bool> IsConnectedAsync(Client client)
         {
             try

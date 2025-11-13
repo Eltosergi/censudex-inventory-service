@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using censudex_inventory_service.src.Service;
 using censudex_inventory_service.src.Models;
 using censudex_inventory_service.src.DTOs;
+using censudex_inventory_service.src.Interface;
 
 namespace censudex_inventory_service.Controllers
 {
@@ -12,10 +13,13 @@ namespace censudex_inventory_service.Controllers
     public class SupabaseController : ControllerBase
     {
         private readonly Client _supabase;
+        private readonly IRabbitMqService _rabbitMqService;
+        private readonly int _threshold = 10;
 
-        public SupabaseController(Client supabase)
+        public SupabaseController(Client supabase, IRabbitMqService rabbitMqService)
         {
             _supabase = supabase;
+            _rabbitMqService = rabbitMqService;
         }
 
         [HttpGet("check")]
@@ -68,12 +72,53 @@ namespace censudex_inventory_service.Controllers
 
             return Ok(inventoryList);
         }
-        
-        // Actualizar inventario - tres variantes: set, inc, dec
-        // Set: establece el stock a un valor específico
-        // Inc: incrementa el stock en una cantidad específica
-        // Dec: decrementa el stock en una cantidad específica
 
+
+        [HttpPatch("update/{productId}")]
+        public async Task<IActionResult> UpdateDecInventory(Guid productId, [FromBody] long stock)
+        {
+            try
+            {
+                var existingInventory = await SupabaseHelper.GetInventoryAsync(_supabase, productId);
+                if (existingInventory == null)
+                {
+                    return NotFound("Inventario no encontrado para actualizar");
+                }
+
+                if (existingInventory.stock + stock < 0)
+                {
+                    return BadRequest("No hay suficiente stock para decrementar");
+                }
+
+                var inventory = new Inventory
+                {
+                    productid = productId,
+                    stock = existingInventory.stock + stock
+                };
+
+                if (inventory.stock < _threshold)
+                {
+                    var alert = new InventoryAlertDTO
+                    {
+                        ProductId = productId,
+                        CurrentStock = inventory.stock,
+                        Threshold = _threshold
+                    };
+
+                    await _rabbitMqService.PublishAsync(alert);
+
+                }
+
+                var result = await SupabaseHelper.UpdateInventoryAsync(_supabase, inventory);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
+        }
+        
+        
         [HttpPatch("update/set/{productId}")]
         public async Task<IActionResult> UpdateSetInventory(Guid productId, [FromBody] long stock)
         {
@@ -91,31 +136,18 @@ namespace censudex_inventory_service.Controllers
                     stock = stock
                 };
 
-                var result = await SupabaseHelper.UpdateInventoryAsync(_supabase, inventory);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error: {ex.Message}");
-            }
-        }
-
-        [HttpPatch("update/inc/{productId}")]
-        public async Task<IActionResult> UpdateIncInventory(Guid productId, [FromBody] long stock)
-        {
-            try
-            {
-                var existingInventory = await SupabaseHelper.GetInventoryAsync(_supabase, productId);
-                if (existingInventory == null)
+                if (inventory.stock < _threshold)
                 {
-                    return NotFound("Inventario no encontrado para actualizar");
+                    var alert = new InventoryAlertDTO
+                    {
+                        ProductId = productId,
+                        CurrentStock = inventory.stock,
+                        Threshold = _threshold
+                    };
+
+                    await _rabbitMqService.PublishAsync(alert);
+                    
                 }
-
-                var inventory = new Inventory
-                {
-                    productid = productId,
-                    stock = existingInventory.stock + stock
-                };
 
                 var result = await SupabaseHelper.UpdateInventoryAsync(_supabase, inventory);
                 return Ok(result);
@@ -126,36 +158,6 @@ namespace censudex_inventory_service.Controllers
             }
         }
 
-        [HttpPatch("update/dec/{productId}")]
-        public async Task<IActionResult> UpdateDecInventory(Guid productId, [FromBody] long stock)
-        {
-            try
-            {
-                var existingInventory = await SupabaseHelper.GetInventoryAsync(_supabase, productId);
-                if (existingInventory == null)
-                {
-                    return NotFound("Inventario no encontrado para actualizar");
-                }
-
-                if (existingInventory.stock < stock)
-                {
-                    return BadRequest("No hay suficiente stock para decrementar");
-                }
-
-                var inventory = new Inventory
-                {
-                    productid = productId,
-                    stock = existingInventory.stock - stock
-                };
-
-                var result = await SupabaseHelper.UpdateInventoryAsync(_supabase, inventory);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error: {ex.Message}");
-            }
-        }
 
 
     }

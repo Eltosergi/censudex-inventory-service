@@ -46,3 +46,7 @@ C:\Users\Serpa\Desktop\censudex-inventory-service\obj\Debug\net9.0\refint\censud
 C:\Users\Serpa\Desktop\censudex-inventory-service\obj\Debug\net9.0\censudex-inventory-service.pdb
 C:\Users\Serpa\Desktop\censudex-inventory-service\obj\Debug\net9.0\censudex-inventory-service.genruntimeconfig.cache
 C:\Users\Serpa\Desktop\censudex-inventory-service\obj\Debug\net9.0\ref\censudex-inventory-service.dll
+C:\Users\Serpa\Desktop\censudex-inventory-service\bin\Debug\net9.0\MassTransit.dll
+C:\Users\Serpa\Desktop\censudex-inventory-service\bin\Debug\net9.0\MassTransit.Abstractions.dll
+C:\Users\Serpa\Desktop\censudex-inventory-service\bin\Debug\net9.0\MassTransit.RabbitMqTransport.dll
+C:\Users\Serpa\Desktop\censudex-inventory-service\bin\Debug\net9.0\RabbitMQ.Client.dll

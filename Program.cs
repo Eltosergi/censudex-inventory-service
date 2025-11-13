@@ -1,12 +1,14 @@
+using censudex_inventory_service.src.Interface;
+using censudex_inventory_service.src.Service;
+using MassTransit;
 using Supabase;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1️⃣ Leer configuración
+
 var supabaseUrl = builder.Configuration["Supabase:Url"];
 var supabaseKey = builder.Configuration["Supabase:Key"];
 
-// 2️⃣ Registrar el cliente Supabase como Singleton (mejor que Scoped)
 builder.Services.AddSingleton<Client>(sp =>
 {
     var client = new Client(supabaseUrl!, supabaseKey!, new SupabaseOptions
@@ -15,16 +17,28 @@ builder.Services.AddSingleton<Client>(sp =>
         AutoRefreshToken = true
     });
 
-    // Inicializa el cliente al iniciar el servidor
+
     client.InitializeAsync().Wait();
 
     return client;
 });
 
-// 3️⃣ Agregar controladores
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+    });
+});
+
+builder.Services.AddScoped<IRabbitMqService, RabbitMqService>();
+
 builder.Services.AddControllers();
 
-// 4️⃣ Construir la app
 var app = builder.Build();
 
 app.MapControllers();
