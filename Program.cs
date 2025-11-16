@@ -25,6 +25,8 @@ builder.Services.AddSingleton<Client>(sp =>
 
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumer<OrderCreatedConsumer>();
+
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("localhost", "/", h =>
@@ -32,8 +34,26 @@ builder.Services.AddMassTransit(x =>
             h.Username("guest");
             h.Password("guest");
         });
+
+        cfg.ClearSerialization();
+        cfg.UseRawJsonSerializer();
+        cfg.UseRawJsonDeserializer();
+
+        cfg.ReceiveEndpoint("order.created", e =>
+        {
+            e.ConfigureConsumeTopology = false; 
+            e.ConfigureConsumer<OrderCreatedConsumer>(context);
+
+
+            e.Bind("order.created", x =>
+            {
+                x.RoutingKey = "";
+            });
+        });
     });
 });
+
+
 
 builder.Services.AddScoped<IRabbitMqService, RabbitMqService>();
 

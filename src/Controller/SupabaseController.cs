@@ -75,7 +75,7 @@ namespace censudex_inventory_service.Controllers
 
 
         [HttpPatch("update/{productId}")]
-        public async Task<IActionResult> UpdateDecInventory(Guid productId, [FromBody] long stock)
+        public async Task<IActionResult> ProcessStockChange(Guid productId, [FromBody] long stock)
         {
             try
             {
