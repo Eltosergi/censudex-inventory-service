@@ -87,6 +87,13 @@ namespace censudex_inventory_service.Controllers
 
                 if (existingInventory.stock + stock < 0)
                 {
+                    await _rabbitMqService.PublishAsync(
+                        new OrderFailedStockEvent
+                        {
+                            ProductId = productId,
+                            CurrentStock = existingInventory.stock,
+                            AttemptedChange = stock
+                        });
                     return BadRequest("No hay suficiente stock para decrementar");
                 }
 
@@ -98,18 +105,28 @@ namespace censudex_inventory_service.Controllers
 
                 if (inventory.stock < _threshold)
                 {
-                    var alert = new InventoryAlertDTO
+
+
+                    await _rabbitMqService.PublishAsync(new StockLowEvent
                     {
                         ProductId = productId,
                         CurrentStock = inventory.stock,
                         Threshold = _threshold
-                    };
-
-                    await _rabbitMqService.PublishAsync(alert);
+                    });
 
                 }
 
                 var result = await SupabaseHelper.UpdateInventoryAsync(_supabase, inventory);
+
+                    await _rabbitMqService.PublishAsync(
+                        new OrderSuccessStockEvent
+                        {
+                            ProductId = productId,
+                            CurrentStock = inventory.stock,
+                            AttemptedChange = stock
+                        });
+
+                    
                 return Ok(result);
             }
             catch (Exception ex)
@@ -138,14 +155,14 @@ namespace censudex_inventory_service.Controllers
 
                 if (inventory.stock < _threshold)
                 {
-                    var alert = new InventoryAlertDTO
+
+
+                    await _rabbitMqService.PublishAsync(new StockLowEvent
                     {
                         ProductId = productId,
                         CurrentStock = inventory.stock,
                         Threshold = _threshold
-                    };
-
-                    await _rabbitMqService.PublishAsync(alert);
+                    });
                     
                 }
 
