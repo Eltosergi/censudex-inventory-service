@@ -50,3 +50,4 @@ C:\Users\Serpa\Desktop\censudex-inventory-service\bin\Debug\net9.0\MassTransit.d
 C:\Users\Serpa\Desktop\censudex-inventory-service\bin\Debug\net9.0\MassTransit.Abstractions.dll
 C:\Users\Serpa\Desktop\censudex-inventory-service\bin\Debug\net9.0\MassTransit.RabbitMqTransport.dll
 C:\Users\Serpa\Desktop\censudex-inventory-service\bin\Debug\net9.0\RabbitMQ.Client.dll
+C:\Users\Serpa\Desktop\censudex-inventory-service\bin\Debug\net9.0\Censudex-Inventory-Microsevice.postman_collection.json
