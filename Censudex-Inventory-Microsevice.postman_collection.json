@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "5dc3df22-b8a8-4ad1-b401-b94fcb999d06",
 		"name": "Censudex-Inventory-Microsevice",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "38011692",
 		"_collection_link": "https://www.postman.com/sdfsd7-7952/workspace/taller-idwm/collection/38011692-5dc3df22-b8a8-4ad1-b401-b94fcb999d06?action=share&source=collection_link&creator=38011692"
 	},
@@ -12,19 +12,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": {
-					"raw": "http://localhost:5233/api/Supabase/check",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5233",
-					"path": [
-						"api",
-						"Supabase",
-						"check"
-					]
-				},
+				"url": "http://localhost:5233/api/Supabase/check",
 				"description": "Aqui Se ve el estado de la conexion con supabase"
 			},
 			"response": []
@@ -43,19 +31,7 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "http://localhost:5233/api/Supabase/add",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5233",
-					"path": [
-						"api",
-						"Supabase",
-						"add"
-					]
-				},
+				"url": "http://localhost:5233/api/Supabase/add",
 				"description": "Se agrega un producto al inventario en base al UUIDv4.\n\n{\n\n\"productid\": UUIDv4,\n\n\"stock\": cantidad de stock\n\n}"
 			},
 			"response": []
@@ -65,20 +41,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": {
-					"raw": "http://localhost:5233/api/Supabase/get/5267673f-bfb9-476f-b45c-1f316abefd17",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5233",
-					"path": [
-						"api",
-						"Supabase",
-						"get",
-						"5267673f-bfb9-476f-b45c-1f316abefd17"
-					]
-				},
+				"url": "http://localhost:5233/api/Supabase/get/5267673f-bfb9-476f-b45c-1f316abefd17",
 				"description": "Se obtiene el producto por ID\n\nhttp//localhost:5233/api/Supabase/get/{productid}"
 			},
 			"response": []
@@ -88,19 +51,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": {
-					"raw": "http://localhost:5233/api/Supabase/getall",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5233",
-					"path": [
-						"api",
-						"Supabase",
-						"getall"
-					]
-				},
+				"url": "http://localhost:5233/api/Supabase/getall",
 				"description": "obtiene todos los productos"
 			},
 			"response": []
@@ -119,21 +70,27 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "http://localhost:5233/api/Supabase/update/5267673f-bfb9-476f-b45c-1f316abefd17",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5233",
-					"path": [
-						"api",
-						"Supabase",
-						"update",
-						"5267673f-bfb9-476f-b45c-1f316abefd17"
-					]
-				},
+				"url": "http://localhost:5233/api/Supabase/update/5267673f-bfb9-476f-b45c-1f316abefd17",
 				"description": "Aumenta con un numero positivo y Decrementa con un numero negativo\n\n[http://localhost:5233/api/Supabase/update/{productid}](http://localhost:5233/api/Supabase/update/5267673f-bfb9-476f-b45c-1f316abefd17)\n\nbody{\n\n{numero: long}\n\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "Setear stock del producto",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "123",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5233/api/Supabase/update/set/5267673f-bfb9-476f-b45c-1f316abefd17",
+				"description": "Setea el stock del producto\n\n[http://localhost:5233/api/Supabase/update/{productid}](http://localhost:5233/api/Supabase/update/5267673f-bfb9-476f-b45c-1f316abefd17)\n\nbody{\n\n{numero: long}\n\n}"
 			},
 			"response": []
 		}
